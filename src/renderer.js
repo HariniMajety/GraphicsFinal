@@ -189,6 +189,8 @@ uniform float uRoughness;
 uniform float uSpecularStrength;
 uniform float uSheenStrength;
 uniform float uStrainReference;
+uniform float uStrainMin;
+uniform float uStrainMax;
 
 out vec4 outColor;
 
@@ -406,8 +408,9 @@ void main() {
   float rim = pow(1.0 - ndotv, 2.2);
   vec3 base = uColor;
   if (uStrainTint) {
-    float normalizedStrain = clamp(vStrain / max(uStrainReference, 0.0015), 0.0, 1.0);
-    float strainView = pow(normalizedStrain, 0.42);
+    float normalizedStrain =
+      clamp((vStrain - uStrainMin) / max(uStrainMax - uStrainMin, 0.0001), 0.0, 1.0);
+    float strainView = pow(normalizedStrain, 0.30);
     base = heatmap(strainView);
   } else if (uNormalTint) {
     base = shadingNormal * 0.5 + 0.5;
@@ -426,6 +429,14 @@ void main() {
 
   vec3 shaded = base * (0.22 + wrapDiffuse * 0.78);
   shaded += base * skyAmbient * 0.55;
+
+  if (uStrainTint) {
+    shaded = base * (0.70 + wrapDiffuse * 0.30);
+    shaded += base * 0.28;
+    shaded += rim * vec3(0.05, 0.05, 0.05);
+    outColor = vec4(clamp(shaded, 0.0, 1.0), uAlpha);
+    return;
+  }
 
   if (uSurfaceKind == 0 && uFabricKind == 0) {
     vec3 tangent = normalize(vec3(0.04, 0.995, 0.08));
@@ -798,6 +809,8 @@ export class Renderer {
     specular = 0.12,
     sheen = 0.0,
     strainReference = 0.01,
+    strainMin = 0.0,
+    strainMax = 0.01,
   ) {
     const gl = this.gl;
     const { projection, view, eye } = this.viewProjection();
@@ -816,6 +829,8 @@ export class Renderer {
     gl.uniform1f(gl.getUniformLocation(this.surfaceProgram, "uSpecularStrength"), specular);
     gl.uniform1f(gl.getUniformLocation(this.surfaceProgram, "uSheenStrength"), sheen);
     gl.uniform1f(gl.getUniformLocation(this.surfaceProgram, "uStrainReference"), strainReference);
+    gl.uniform1f(gl.getUniformLocation(this.surfaceProgram, "uStrainMin"), strainMin);
+    gl.uniform1f(gl.getUniformLocation(this.surfaceProgram, "uStrainMax"), strainMax);
     gl.uniform1f(gl.getUniformLocation(this.surfaceProgram, "uAlpha"), alpha);
   }
 
@@ -834,10 +849,17 @@ export class Renderer {
     this.resize();
     this.updateClothMesh(simulation);
     let peakStrain = 0;
+    let minStrain = Number.POSITIVE_INFINITY;
     for (let index = 0; index < simulation.strain.length; index += 1) {
-      peakStrain = Math.max(peakStrain, simulation.strain[index]);
+      const value = simulation.strain[index];
+      peakStrain = Math.max(peakStrain, value);
+      minStrain = Math.min(minStrain, value);
     }
-    const strainReference = Math.max(peakStrain * 0.22, 0.003);
+    const strainReference = Math.max(peakStrain * 0.08, 0.001);
+    if (!Number.isFinite(minStrain)) {
+      minStrain = 0;
+    }
+    const strainMax = Math.max(peakStrain * 0.50, minStrain + 0.0001);
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
     gl.enable(gl.BLEND);
@@ -861,7 +883,19 @@ export class Renderer {
       floorModel[13] = simulation.floorY;
       if (!shouldHideFloor) {
         gl.disable(gl.CULL_FACE);
-        this.useSurfaceProgram(floorModel, new Float32Array([0.33, 0.34, 0.35]), 0.9, 1, 0, 0.94, 0.04, 0.0, strainReference);
+        this.useSurfaceProgram(
+          floorModel,
+          new Float32Array([0.33, 0.34, 0.35]),
+          0.9,
+          1,
+          0,
+          0.94,
+          0.04,
+          0.0,
+          strainReference,
+          minStrain,
+          strainMax,
+        );
         gl.bindVertexArray(this.floorBuffers.vao);
         gl.drawElements(gl.TRIANGLES, this.floorBuffers.count, gl.UNSIGNED_SHORT, 0);
         gl.enable(gl.CULL_FACE);
@@ -875,7 +909,19 @@ export class Renderer {
         0, 0, simulation.sphere.radius, 0,
         simulation.sphere.center[0], simulation.sphere.center[1], simulation.sphere.center[2], 1,
       ]);
-      this.useSurfaceProgram(sphereModel, new Float32Array([0.86, 0.90, 0.94]), 1, 2, 0, 0.18, 0.52, 0.0, strainReference);
+      this.useSurfaceProgram(
+        sphereModel,
+        new Float32Array([0.86, 0.90, 0.94]),
+        1,
+        2,
+        0,
+        0.18,
+        0.52,
+        0.0,
+        strainReference,
+        minStrain,
+        strainMax,
+      );
       gl.bindVertexArray(this.sphereBuffers.vao);
       gl.drawElements(gl.TRIANGLES, this.sphereBuffers.count, gl.UNSIGNED_SHORT, 0);
     }
@@ -892,6 +938,8 @@ export class Renderer {
       clothMaterial.specular,
       clothMaterial.sheen,
       strainReference,
+      minStrain,
+      strainMax,
     );
     gl.bindVertexArray(this.clothBuffers.vao);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.clothBuffers.indexBuffer);
