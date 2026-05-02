@@ -22,6 +22,8 @@ const controls = {
   gravity: document.getElementById("gravity"),
   wind: document.getElementById("wind"),
   gust: document.getElementById("gust"),
+  floorFriction: document.getElementById("floor-friction"),
+  sphereFriction: document.getElementById("sphere-friction"),
   pause: document.getElementById("pause-toggle"),
   windToggle: document.getElementById("wind-toggle"),
   sphereToggle: document.getElementById("sphere-toggle"),
@@ -42,6 +44,8 @@ const outputs = {
   gravity: document.getElementById("gravity-value"),
   wind: document.getElementById("wind-value"),
   gust: document.getElementById("gust-value"),
+  floorFriction: document.getElementById("floor-friction-value"),
+  sphereFriction: document.getElementById("sphere-friction-value"),
 };
 
 const simulation = new ClothSimulation();
@@ -54,15 +58,29 @@ function syncOutputs() {
   outputs.gravity.value = Number(controls.gravity.value).toFixed(1);
   outputs.wind.value = Number(controls.wind.value).toFixed(1);
   outputs.gust.value = Number(controls.gust.value).toFixed(1);
+  outputs.floorFriction.value = Number(controls.floorFriction.value).toFixed(2);
+  outputs.sphereFriction.value = Number(controls.sphereFriction.value).toFixed(2);
 }
 
 function applyMaterialPreset(name) {
+  if (name === "basic") {
+    controls.substeps.value = "7";
+    controls.stiffness.value = "0.74";
+    controls.damping.value = "0.993";
+    controls.wind.value = "5.0";
+    controls.gust.value = "1.1";
+    controls.floorFriction.value = "0.34";
+    controls.sphereFriction.value = "0.18";
+    return;
+  }
   if (name === "canvas") {
     controls.substeps.value = "8";
     controls.stiffness.value = "1.02";
     controls.damping.value = "0.997";
     controls.wind.value = "3.4";
     controls.gust.value = "0.6";
+    controls.floorFriction.value = "0.62";
+    controls.sphereFriction.value = "0.40";
     return;
   }
   if (name === "velvet") {
@@ -71,6 +89,8 @@ function applyMaterialPreset(name) {
     controls.damping.value = "0.998";
     controls.wind.value = "2.2";
     controls.gust.value = "0.3";
+    controls.floorFriction.value = "0.76";
+    controls.sphereFriction.value = "0.52";
     return;
   }
   if (name === "rubber") {
@@ -79,6 +99,8 @@ function applyMaterialPreset(name) {
     controls.damping.value = "0.985";
     controls.wind.value = "1.2";
     controls.gust.value = "0.1";
+    controls.floorFriction.value = "0.90";
+    controls.sphereFriction.value = "0.72";
     return;
   }
   controls.substeps.value = "6";
@@ -86,6 +108,8 @@ function applyMaterialPreset(name) {
   controls.damping.value = "0.989";
   controls.wind.value = "11.5";
   controls.gust.value = "3.2";
+  controls.floorFriction.value = "0.14";
+  controls.sphereFriction.value = "0.08";
 }
 
 function pullControlsIntoSimulation() {
@@ -95,6 +119,8 @@ function pullControlsIntoSimulation() {
   simulation.setParam("gravity", Number(controls.gravity.value));
   simulation.setParam("windStrength", Number(controls.wind.value));
   simulation.setParam("gustStrength", Number(controls.gust.value));
+  simulation.setParam("floorFriction", Number(controls.floorFriction.value));
+  simulation.setParam("sphereFriction", Number(controls.sphereFriction.value));
   simulation.setParam("windEnabled", controls.windToggle.checked);
   simulation.setParam("sphereEnabled", controls.sphereToggle.checked);
   simulation.setParam("floorEnabled", controls.floorToggle.checked);

@@ -234,6 +234,71 @@ vec3 fresnelSchlick(float cosTheta, vec3 f0) {
   return f0 + (1.0 - f0) * pow(1.0 - clamp(cosTheta, 0.0, 1.0), 5.0);
 }
 
+float aaThreadBand(float coord, float center, float halfWidth) {
+  float distanceToCenter = abs(fract(coord) - center);
+  float feather = fwidth(coord) * 1.4 + 0.004;
+  return 1.0 - smoothstep(halfWidth, halfWidth + feather, distanceToCenter);
+}
+
+float rubberHeight(vec2 uv) {
+  vec2 p = uv * vec2(10.0, 14.0);
+  float broad = fbm(p * 0.9);
+  float grain = fbm(p * 3.6);
+  float pressed = smoothstep(0.60, 0.88, fbm(p * 2.1 + vec2(4.7, 9.3)));
+  return broad * 0.55 + grain * 0.18 - pressed * 0.10;
+}
+
+float canvasHeight(vec2 uv) {
+  vec2 p = uv * vec2(40.0, 44.0);
+  float warpShift = (fbm(uv * vec2(4.8, 1.9)) - 0.5) * 0.12;
+  float weftShift = (fbm(uv * vec2(1.9, 4.4) + vec2(3.0, 1.2)) - 0.5) * 0.12;
+  float warpBand = aaThreadBand(p.x + warpShift, 0.5, 0.11);
+  float weftBand = aaThreadBand(p.y + weftShift, 0.5, 0.10);
+  float slub = smoothstep(0.90, 0.985, fbm(uv * vec2(10.0, 6.0)));
+  float body = fbm(uv * vec2(1.8, 2.8));
+  return warpBand * 0.040 + weftBand * 0.038 + slub * 0.012 + body * 0.008;
+}
+
+vec3 perturbNormalFromRubber(vec3 baseNormal, vec3 worldPosition, vec2 uv, float scale) {
+  vec3 dp1 = dFdx(worldPosition);
+  vec3 dp2 = dFdy(worldPosition);
+  vec2 duv1 = dFdx(uv);
+  vec2 duv2 = dFdy(uv);
+  float det = duv1.x * duv2.y - duv1.y * duv2.x;
+  if (abs(det) < 1e-5) {
+    return baseNormal;
+  }
+
+  vec3 tangent = normalize((dp1 * duv2.y - dp2 * duv1.y) / det);
+  vec3 bitangent = normalize((-dp1 * duv2.x + dp2 * duv1.x) / det);
+
+  float h = rubberHeight(uv);
+  float hx = rubberHeight(uv + vec2(0.003, 0.0)) - h;
+  float hy = rubberHeight(uv + vec2(0.0, 0.003)) - h;
+
+  return normalize(baseNormal - tangent * hx * scale - bitangent * hy * scale);
+}
+
+vec3 perturbNormalFromCanvas(vec3 baseNormal, vec3 worldPosition, vec2 uv, float scale) {
+  vec3 dp1 = dFdx(worldPosition);
+  vec3 dp2 = dFdy(worldPosition);
+  vec2 duv1 = dFdx(uv);
+  vec2 duv2 = dFdy(uv);
+  float det = duv1.x * duv2.y - duv1.y * duv2.x;
+  if (abs(det) < 1e-5) {
+    return baseNormal;
+  }
+
+  vec3 tangent = normalize((dp1 * duv2.y - dp2 * duv1.y) / det);
+  vec3 bitangent = normalize((-dp1 * duv2.x + dp2 * duv1.x) / det);
+
+  float h = canvasHeight(uv);
+  float hx = canvasHeight(uv + vec2(0.0035, 0.0)) - h;
+  float hy = canvasHeight(uv + vec2(0.0, 0.0035)) - h;
+
+  return normalize(baseNormal - tangent * hx * scale - bitangent * hy * scale);
+}
+
 vec3 fabricDetail(vec3 base, vec2 uv, int fabricKind) {
   vec2 macroUv = uv * vec2(3.0, 4.8);
   if (fabricKind == 0) {
@@ -247,25 +312,46 @@ vec3 fabricDetail(vec3 base, vec2 uv, int fabricKind) {
     base *= 0.985 + weave * 0.015;
     base += vec3(0.22, 0.19, 0.13) * softBand * 0.035;
   } else if (fabricKind == 1) {
-    float warp = sin(macroUv.x * 30.0) * 0.5 + 0.5;
-    float weft = sin(macroUv.y * 28.0) * 0.5 + 0.5;
-    float weave = warp * weft;
-    float accent = fbm(macroUv * 5.8);
-    float fleck = smoothstep(0.72, 0.94, fbm(macroUv * 10.0));
-    base *= 0.82 + weave * 0.10 + accent * 0.12;
-    base += vec3(0.12, 0.09, 0.05) * fleck * 0.26;
+    vec2 fineUv = uv * vec2(48.0, 52.0);
+    float warp = aaThreadBand(fineUv.x + (fbm(uv * vec2(4.0, 1.6)) - 0.5) * 0.08, 0.5, 0.12);
+    float weft = aaThreadBand(fineUv.y + (fbm(uv * vec2(1.8, 4.2) + vec2(2.0, 1.0)) - 0.5) * 0.08, 0.5, 0.11);
+    float threadBody = warp * 0.54 + weft * 0.46;
+    float slub = smoothstep(0.88, 0.98, fbm(uv * vec2(11.0, 6.0)));
+    float body = fbm(uv * vec2(2.2, 3.4));
+    base *= 0.95 + body * 0.03;
+    base *= 0.92 + threadBody * 0.06;
+    base += vec3(0.035, 0.035, 0.040) * slub * 0.05;
+    base -= vec3(0.020, 0.022, 0.025) * (1.0 - threadBody) * 0.05;
   } else if (fabricKind == 2) {
+    vec2 fineUv = uv * vec2(40.0, 44.0);
+    float warpShift = (fbm(uv * vec2(4.8, 1.9)) - 0.5) * 0.12;
+    float weftShift = (fbm(uv * vec2(1.9, 4.4) + vec2(3.0, 1.2)) - 0.5) * 0.12;
+    float warpBand = aaThreadBand(fineUv.x + warpShift, 0.5, 0.11);
+    float weftBand = aaThreadBand(fineUv.y + weftShift, 0.5, 0.10);
+    float warpThread = smoothstep(0.24, 0.72, warpBand);
+    float weftThread = smoothstep(0.24, 0.72, weftBand);
+    float threadBody = warpThread * 0.52 + weftThread * 0.48;
+    float slub = smoothstep(0.90, 0.985, fbm(uv * vec2(10.0, 6.0)));
+    float body = fbm(uv * vec2(1.8, 2.8));
+    float warmBlotch = fbm(uv * vec2(0.85, 1.10) + vec2(3.0, 1.0));
+    base *= 0.992 + body * 0.008;
+    base *= 0.986 + threadBody * 0.010;
+    base += vec3(0.016, 0.013, 0.009) * slub * 0.026;
+    base += vec3(0.012, 0.010, 0.007) * warmBlotch * 0.010;
+    base -= vec3(0.010, 0.008, 0.005) * (1.0 - threadBody) * 0.012;
+  } else if (fabricKind == 3) {
     float pile = fbm(macroUv * 7.2);
     float nap = sin(macroUv.x * 12.0 + macroUv.y * 8.0) * 0.5 + 0.5;
     float accent = fbm(macroUv * 3.6);
     base *= 0.70 + accent * 0.16 + pile * 0.12;
     base += vec3(0.22, 0.05, 0.12) * nap * 0.18;
   } else {
-    float smoothGrain = fbm(macroUv * 5.4);
-    float dimples = smoothstep(0.66, 0.9, fbm(macroUv * 12.0));
-    base *= 0.86 + smoothGrain * 0.08;
-    base -= vec3(0.03, 0.04, 0.05) * dimples * 0.25;
-    base += vec3(0.05, 0.07, 0.09) * smoothstep(0.58, 0.84, smoothGrain) * 0.14;
+    float molded = rubberHeight(uv);
+    float grain = fbm(macroUv * 7.6);
+    float pressed = smoothstep(0.64, 0.9, fbm(macroUv * 4.8 + vec2(3.0, 7.0)));
+    base *= 0.72 + molded * 0.08 + grain * 0.03;
+    base -= vec3(0.012, 0.012, 0.011) * pressed * 0.28;
+    base += vec3(0.010, 0.010, 0.009) * smoothstep(0.60, 0.86, grain) * 0.06;
   }
   return clamp(base, 0.0, 1.0);
 }
@@ -298,18 +384,25 @@ vec3 sphereDetail(vec3 base, vec3 worldPosition) {
 
 void main() {
   vec3 normal = normalize(vNormal);
+  if (uSurfaceKind == 0 && uFabricKind == 2) {
+    normal = perturbNormalFromCanvas(normal, vWorldPosition, vUv, 0.14);
+  }
+  if (uSurfaceKind == 0 && uFabricKind == 4) {
+    normal = perturbNormalFromRubber(normal, vWorldPosition, vUv, 3.8);
+  }
+  vec3 shadingNormal = gl_FrontFacing ? normal : -normal;
   vec3 lightDir = normalize(-uLightDirection);
   vec3 viewDir = normalize(uCameraPos - vWorldPosition);
   vec3 halfVec = normalize(lightDir + viewDir);
-  float ndotl = max(dot(normal, lightDir), 0.0);
-  float ndotv = max(dot(normal, viewDir), 0.0);
-  float ndoth = max(dot(normal, halfVec), 0.0);
+  float ndotl = max(dot(shadingNormal, lightDir), 0.0);
+  float ndotv = max(dot(shadingNormal, viewDir), 0.0);
+  float ndoth = max(dot(shadingNormal, halfVec), 0.0);
   float rim = pow(1.0 - ndotv, 2.2);
   vec3 base = uColor;
   if (uStrainTint) {
     base = heatmap(vStrain * 4.5);
   } else if (uNormalTint) {
-    base = normal * 0.5 + 0.5;
+    base = shadingNormal * 0.5 + 0.5;
   } else if (uSurfaceKind == 0) {
     base = fabricDetail(base, vUv, uFabricKind);
   } else if (uSurfaceKind == 1) {
@@ -317,8 +410,8 @@ void main() {
   } else if (uSurfaceKind == 2) {
     base = sphereDetail(base, vWorldPosition);
   }
-  float wrapDiffuse = clamp((dot(normal, lightDir) + 0.35) / 1.35, 0.0, 1.0);
-  vec3 skyAmbient = mix(vec3(0.06, 0.08, 0.10), vec3(0.16, 0.19, 0.22), normal.y * 0.5 + 0.5);
+  float wrapDiffuse = clamp((dot(shadingNormal, lightDir) + 0.35) / 1.35, 0.0, 1.0);
+  vec3 skyAmbient = mix(vec3(0.06, 0.08, 0.10), vec3(0.16, 0.19, 0.22), shadingNormal.y * 0.5 + 0.5);
   float specPower = mix(160.0, 12.0, clamp(uRoughness, 0.0, 1.0));
   float specular = pow(ndoth, specPower) * uSpecularStrength;
   float clothSheen = pow(1.0 - ndotv, 4.2) * uSheenStrength;
@@ -328,29 +421,48 @@ void main() {
 
   if (uSurfaceKind == 0 && uFabricKind == 0) {
     vec3 tangent = normalize(vec3(0.04, 0.995, 0.08));
-    vec3 bitangent = normalize(cross(normal, tangent));
-    vec3 halfProjected = normalize(halfVec - normal * dot(halfVec, normal) + tangent * 0.0001);
+    vec3 bitangent = normalize(cross(shadingNormal, tangent));
+    vec3 halfProjected = normalize(halfVec - shadingNormal * dot(halfVec, shadingNormal) + tangent * 0.0001);
     float threadResponse = abs(dot(halfProjected, bitangent));
     float anisotropic = pow(1.0 - threadResponse, 28.0);
     vec3 silkFresnel = fresnelSchlick(ndotv, vec3(0.11, 0.10, 0.09));
-    shaded = base * (0.16 + ndotl * 0.54);
+    float backFactor = gl_FrontFacing ? 1.0 : 0.68;
+    shaded = base * (0.22 + ndotl * 0.48);
     shaded += base * skyAmbient * 0.35;
-    shaded += vec3(1.0, 0.97, 0.90) * specular * 1.45;
-    shaded += vec3(1.0, 0.95, 0.86) * anisotropic * uSheenStrength * 0.82;
-    shaded += silkFresnel * vec3(0.95, 0.88, 0.74) * 0.55;
+    shaded += vec3(1.0, 0.97, 0.90) * specular * mix(0.65, 1.45, backFactor);
+    shaded += vec3(1.0, 0.95, 0.86) * anisotropic * uSheenStrength * mix(0.36, 0.82, backFactor);
+    shaded += silkFresnel * vec3(0.95, 0.88, 0.74) * mix(0.22, 0.55, backFactor);
   } else if (uSurfaceKind == 0 && uFabricKind == 1) {
-    shaded += vec3(1.0, 0.98, 0.93) * specular * 0.32;
+    shaded = base * (0.24 + wrapDiffuse * 0.68);
+    shaded += base * skyAmbient * 0.52;
+    shaded += vec3(0.95, 0.96, 0.98) * specular * 0.08;
     shaded += base * clothSheen * 0.10;
   } else if (uSurfaceKind == 0 && uFabricKind == 2) {
+    float chalk = pow(ndotv, 0.8);
+    float weavePresence = canvasHeight(vUv);
+    shaded = base * (0.38 + wrapDiffuse * 0.62);
+    shaded += base * skyAmbient * 0.62;
+    shaded += vec3(0.99, 0.985, 0.96) * specular * 0.018;
+    shaded += vec3(0.045, 0.040, 0.032) * chalk * 0.014;
+    shaded *= 0.996 + weavePresence * 0.014;
+    shaded *= 1.055;
+  } else if (uSurfaceKind == 0 && uFabricKind == 3) {
     float velvetBloom = pow(1.0 - ndotv, 2.3);
     shaded = base * (0.14 + wrapDiffuse * 0.64);
     shaded += base * skyAmbient * 0.40;
     shaded += base * velvetBloom * 0.32;
     shaded += vec3(0.95, 0.76, 0.84) * specular * 0.10;
-  } else if (uSurfaceKind == 0 && uFabricKind == 3) {
-    vec3 rubberFresnel = fresnelSchlick(ndotv, vec3(0.05));
-    shaded += vec3(0.96, 0.98, 1.0) * specular * 1.28;
-    shaded += rubberFresnel * 0.12;
+  } else if (uSurfaceKind == 0 && uFabricKind == 4) {
+    vec3 rubberFresnel = fresnelSchlick(ndotv, vec3(0.04));
+    float broadSpec = pow(ndoth, 18.0) * uSpecularStrength * 0.34;
+    float tightSpec = pow(ndoth, 70.0) * uSpecularStrength * 0.06;
+    float edgeLift = pow(1.0 - ndotv, 2.4);
+    shaded = base * (0.10 + wrapDiffuse * 0.40);
+    shaded += base * skyAmbient * 0.18;
+    shaded += vec3(0.78, 0.78, 0.75) * broadSpec;
+    shaded += vec3(0.92, 0.92, 0.88) * tightSpec;
+    shaded += rubberFresnel * 0.06;
+    shaded += vec3(0.05, 0.05, 0.045) * edgeLift * 0.10;
   } else if (uSurfaceKind == 1) {
     shaded += vec3(0.92, 0.90, 0.84) * specular * 0.08;
   } else if (uSurfaceKind == 2) {
@@ -602,21 +714,31 @@ export class Renderer {
   }
 
   clothMaterial(materialPreset) {
-    if (materialPreset === "canvas") {
+    if (materialPreset === "basic") {
       return {
-        color: new Float32Array([0.76, 0.69, 0.56]),
+        color: new Float32Array([0.66, 0.70, 0.78]),
         alpha: 1,
         kind: 1,
-        roughness: 0.92,
-        specular: 0.045,
-        sheen: 0.04,
+        roughness: 0.82,
+        specular: 0.10,
+        sheen: 0.06,
+      };
+    }
+    if (materialPreset === "canvas") {
+      return {
+        color: new Float32Array([0.94, 0.92, 0.87]),
+        alpha: 1,
+        kind: 2,
+        roughness: 0.97,
+        specular: 0.02,
+        sheen: 0.0,
       };
     }
     if (materialPreset === "velvet") {
       return {
         color: new Float32Array([0.40, 0.07, 0.17]),
         alpha: 1,
-        kind: 2,
+        kind: 3,
         roughness: 0.97,
         specular: 0.02,
         sheen: 0.72,
@@ -624,12 +746,12 @@ export class Renderer {
     }
     if (materialPreset === "rubber") {
       return {
-        color: new Float32Array([0.16, 0.24, 0.34]),
+        color: new Float32Array([0.055, 0.056, 0.052]),
         alpha: 1,
-        kind: 3,
-        roughness: 0.14,
-        specular: 0.82,
-        sheen: 0.02,
+        kind: 4,
+        roughness: 0.42,
+        specular: 0.44,
+        sheen: 0.0,
       };
     }
     return {

@@ -30,6 +30,10 @@ export class ClothSimulation {
       gustStrength: config.gustStrength ?? 1.8,
       floorEnabled: config.floorEnabled ?? true,
       sphereEnabled: config.sphereEnabled ?? true,
+      floorFriction: config.floorFriction ?? 0.38,
+      sphereFriction: config.sphereFriction ?? 0.22,
+      floorRestitution: config.floorRestitution ?? 0.0,
+      sphereRestitution: config.sphereRestitution ?? 0.04,
       tearingEnabled: config.tearingEnabled ?? false,
       tearThreshold: config.tearThreshold ?? 0.24,
     };
@@ -220,6 +224,8 @@ export class ClothSimulation {
         gustStrength: this.params.gustStrength,
         floorEnabled: this.params.floorEnabled,
         sphereEnabled: false,
+        floorFriction: this.params.floorFriction,
+        sphereFriction: this.params.sphereFriction,
       });
       return;
     }
@@ -246,6 +252,8 @@ export class ClothSimulation {
         gustStrength: this.params.gustStrength,
         floorEnabled: this.params.floorEnabled,
         sphereEnabled: true,
+        floorFriction: this.params.floorFriction,
+        sphereFriction: this.params.sphereFriction,
       });
       return;
     }
@@ -270,6 +278,8 @@ export class ClothSimulation {
       gustStrength: this.params.gustStrength,
       floorEnabled: this.params.floorEnabled,
       sphereEnabled: true,
+      floorFriction: this.params.floorFriction,
+      sphereFriction: this.params.sphereFriction,
     });
   }
 
@@ -487,12 +497,64 @@ export class ClothSimulation {
     this.brokenSpringCount += brokenThisStep;
   }
 
+  applyContactFriction(
+    particle,
+    normalX,
+    normalY,
+    normalZ,
+    friction,
+    restitution = 0,
+    settleThreshold = 0,
+  ) {
+    const clampedFriction = clamp(friction, 0, 1);
+    const clampedRestitution = clamp(restitution, 0, 1);
+    const velocityX = particle.position[0] - particle.previous[0];
+    const velocityY = particle.position[1] - particle.previous[1];
+    const velocityZ = particle.position[2] - particle.previous[2];
+    const normalVelocity = velocityX * normalX + velocityY * normalY + velocityZ * normalZ;
+
+    const outwardNormalVelocity = Math.max(normalVelocity, 0);
+    const normalComponentX = normalX * outwardNormalVelocity * clampedRestitution;
+    const normalComponentY = normalY * outwardNormalVelocity * clampedRestitution;
+    const normalComponentZ = normalZ * outwardNormalVelocity * clampedRestitution;
+
+    const tangentX = velocityX - normalX * normalVelocity;
+    const tangentY = velocityY - normalY * normalVelocity;
+    const tangentZ = velocityZ - normalZ * normalVelocity;
+    const tangentScale = Math.max(0, 1 - clampedFriction);
+
+    const nextVelocityX = normalComponentX + tangentX * tangentScale;
+    const nextVelocityY = normalComponentY + tangentY * tangentScale;
+    const nextVelocityZ = normalComponentZ + tangentZ * tangentScale;
+    const nextSpeed = length3(nextVelocityX, nextVelocityY, nextVelocityZ);
+
+    if (nextSpeed < settleThreshold) {
+      particle.previous[0] = particle.position[0];
+      particle.previous[1] = particle.position[1];
+      particle.previous[2] = particle.position[2];
+      return;
+    }
+
+    particle.previous[0] = particle.position[0] - nextVelocityX;
+    particle.previous[1] = particle.position[1] - nextVelocityY;
+    particle.previous[2] = particle.position[2] - nextVelocityZ;
+  }
+
   resolveCollisions() {
     for (let index = 0; index < this.particles.length; index += 1) {
       const particle = this.particles[index];
 
       if (this.params.floorEnabled && particle.position[1] < this.floorY) {
         particle.position[1] = this.floorY + COLLISION_MARGIN;
+        this.applyContactFriction(
+          particle,
+          0,
+          1,
+          0,
+          this.params.floorFriction,
+          this.params.floorRestitution,
+          0.018,
+        );
       }
 
       if (this.params.sphereEnabled) {
@@ -504,6 +566,15 @@ export class ClothSimulation {
           particle.position[0] = this.sphere.center[0];
           particle.position[1] = this.sphere.center[1] + this.sphere.radius + COLLISION_MARGIN;
           particle.position[2] = this.sphere.center[2];
+          this.applyContactFriction(
+            particle,
+            0,
+            1,
+            0,
+            this.params.sphereFriction,
+            this.params.sphereRestitution,
+            0.008,
+          );
           continue;
         }
 
@@ -512,6 +583,15 @@ export class ClothSimulation {
           particle.position[0] = this.sphere.center[0] + dx * scale;
           particle.position[1] = this.sphere.center[1] + dy * scale;
           particle.position[2] = this.sphere.center[2] + dz * scale;
+          this.applyContactFriction(
+            particle,
+            dx / dist,
+            dy / dist,
+            dz / dist,
+            this.params.sphereFriction,
+            this.params.sphereRestitution,
+            0.008,
+          );
         }
       }
     }

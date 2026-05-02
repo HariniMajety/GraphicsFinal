@@ -39,6 +39,7 @@
           <label>
             <span>Fabric Preset</span>
             <select id="material-select">
+              <option value="basic">Basic Cloth</option>
               <option value="silk">Silk</option>
               <option value="canvas">Canvas</option>
               <option value="velvet">Velvet</option>
@@ -83,6 +84,16 @@
             <span>Wind Variation</span>
             <input id="gust" type="range" min="0" max="5" step="0.1" value="1.8" />
             <output id="gust-value">1.8</output>
+          </label>
+          <label>
+            <span>Floor Friction</span>
+            <input id="floor-friction" type="range" min="0" max="1" step="0.01" value="0.38" />
+            <output id="floor-friction-value">0.38</output>
+          </label>
+          <label>
+            <span>Sphere Friction</span>
+            <input id="sphere-friction" type="range" min="0" max="1" step="0.01" value="0.22" />
+            <output id="sphere-friction-value">0.22</output>
           </label>
           <label class="checkbox-row">
             <input id="wind-toggle" type="checkbox" checked />
