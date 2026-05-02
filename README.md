@@ -1,6 +1,6 @@
 # ClothLab
 
-ClothLab is a browser-based final project for an advanced computer graphics topic: **mass-spring cloth simulation with collision handling, interactive controls, and real-time WebGL rendering**. The repository is organized as a submission-ready package with source code, a runnable demo, benchmark artifacts, a final report file, and presentation/collaboration templates.
+ClothLab is a browser-based final project for the topic mass-spring physical simulation. The repository is organized as a submission-ready package with source code, a runnable demo, benchmark artifacts, a final report file, and presentation/collaboration templates.
 
 ## Project Scope
 
@@ -21,7 +21,7 @@ This project demonstrates:
 
 ## How To Run
 
-Because the app is written as ES modules, serve the repository with any simple static web server.
+This project runs natively in the browser using ES modules and requires no compilation step. Because the app is written as ES modules, serve the repository with any simple static web server.
 
 ### Option 1: One-Command Python Launcher
 
@@ -79,17 +79,6 @@ These commands:
 - Enable or disable wind, floor collision, and sphere collision for comparisons.
 - Use `Capture PNG` and `Export Metrics JSON` to create submission artifacts.
 
-## Recommended Demo Flow
-
-For the class presentation:
-
-1. Start with `Curtain Drape` and explain the particle grid, spring families, and collision sphere.
-2. Toggle `Wireframe overlay` to show the mesh and deformation.
-3. Increase wind and gust variation to show dynamic response.
-4. Switch to `Wind Banner` to show corner pinning and a different boundary condition.
-5. Switch to `Drop Test` to show free-fall behavior and floor interaction.
-6. Turn off sphere or floor collisions briefly to discuss failure cases and why constraints matter.
-
 ## Repository Layout
 
 - `index.html`: application shell and controls
@@ -129,30 +118,7 @@ For wind, the renderer-facing mesh is also used to compute a more physically mot
 
 - Interactive executable demo runnable in a browser on Ubuntu, macOS, and Windows
 - Benchmark JSON and CSV artifacts for quantitative evaluation
-- Word-compatible written report at `report/final-report.rtf`
-- README with run instructions and grading context
-- Presentation outline and collaboration report template
 
-## Known Limitations
+## Extra Credit Survey Statement 
 
-- The current implementation does not include self-collision, tearing, or adaptive remeshing.
-- Collision response is geometric projection, not impulse-based contact mechanics.
-- The scene is optimized for clarity and portability rather than photorealistic rendering.
-- The solver is tuned for interactive educational demos, not high-accuracy offline simulation.
-
-## Submission Checklist
-
-- [x] Full source code
-- [x] README with run instructions
-- [x] Interactive demo suitable for screen capture
-- [x] Word-compatible writeup included
-- [x] Benchmark artifacts included
-- [ ] Optional screenshots or video capture added before submission
-- [ ] Collaboration report submitted by each team member if working in a pair
-- [ ] README statement added if all team members completed the course survey extra credit requirement
-
-## Extra Credit Survey Statement Placeholder
-
-If you complete the instructor survey, add a sentence like this before submission:
-
-> On our honor, all team members completed the online course instructor survey.
+On our honor, both team members completed the online course instructor survey.
