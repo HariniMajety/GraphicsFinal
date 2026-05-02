@@ -12,134 +12,140 @@
     "finalStats": {
       "vertexCount": 468,
       "springCount": 2590,
-      "averageStretchPercent": 0.2375,
-      "maxStretchPercent": 7.7357,
-      "averageHeight": 1.2291,
+      "totalSpringCount": 2590,
+      "brokenSpringCount": 0,
+      "averageStretchPercent": 0.1339,
+      "maxStretchPercent": 3.0807,
+      "peakVertexStrainPercent": 3.0806588008999825,
+      "averageHeight": 1.1585,
       "windEnabled": true,
       "substeps": 6,
       "stiffness": 0.72,
       "damping": 0.992,
-      "gravity": 9.8
+      "gravity": 9.8,
+      "tearingEnabled": false,
+      "tearThreshold": 0.24,
+      "breaksLastStep": 0
     },
     "series": [
       {
         "frame": 0,
         "seconds": 0,
-        "averageStretchPercent": 2.1716,
-        "maxStretchPercent": 18.3838,
-        "averageHeight": 1.0428
+        "averageStretchPercent": 1.5809,
+        "maxStretchPercent": 13.2056,
+        "averageHeight": 1.0406
       },
       {
         "frame": 30,
         "seconds": 0.5,
-        "averageStretchPercent": 0.3193,
-        "maxStretchPercent": 5.5025,
-        "averageHeight": 1.3864
+        "averageStretchPercent": 0.164,
+        "maxStretchPercent": 3.4029,
+        "averageHeight": 1.1788
       },
       {
         "frame": 60,
         "seconds": 1,
-        "averageStretchPercent": 0.3504,
-        "maxStretchPercent": 7.5185,
-        "averageHeight": 1.1188
+        "averageStretchPercent": 0.0703,
+        "maxStretchPercent": 1.8032,
+        "averageHeight": 1.077
       },
       {
         "frame": 90,
         "seconds": 1.5,
-        "averageStretchPercent": 0.1753,
-        "maxStretchPercent": 5.5876,
-        "averageHeight": 1.1393
+        "averageStretchPercent": 0.1431,
+        "maxStretchPercent": 2.2465,
+        "averageHeight": 1.0563
       },
       {
         "frame": 120,
         "seconds": 2,
-        "averageStretchPercent": 0.1566,
-        "maxStretchPercent": 5.8322,
-        "averageHeight": 1.1313
+        "averageStretchPercent": 0.1097,
+        "maxStretchPercent": 2.1577,
+        "averageHeight": 1.061
       },
       {
         "frame": 150,
         "seconds": 2.5,
-        "averageStretchPercent": 0.1677,
-        "maxStretchPercent": 5.0779,
-        "averageHeight": 1.1127
+        "averageStretchPercent": 0.1141,
+        "maxStretchPercent": 2.2131,
+        "averageHeight": 1.068
       },
       {
         "frame": 180,
         "seconds": 3,
-        "averageStretchPercent": 0.1633,
-        "maxStretchPercent": 5.3988,
-        "averageHeight": 1.1233
+        "averageStretchPercent": 0.1288,
+        "maxStretchPercent": 2.5087,
+        "averageHeight": 1.078
       },
       {
         "frame": 210,
         "seconds": 3.5,
-        "averageStretchPercent": 0.1433,
-        "maxStretchPercent": 5.8986,
-        "averageHeight": 1.137
+        "averageStretchPercent": 0.1291,
+        "maxStretchPercent": 2.6148,
+        "averageHeight": 1.0917
       },
       {
         "frame": 240,
         "seconds": 4,
-        "averageStretchPercent": 0.1652,
-        "maxStretchPercent": 6.1264,
-        "averageHeight": 1.1433
+        "averageStretchPercent": 0.1285,
+        "maxStretchPercent": 2.7484,
+        "averageHeight": 1.1071
       },
       {
         "frame": 270,
         "seconds": 4.5,
-        "averageStretchPercent": 0.1921,
-        "maxStretchPercent": 6.7666,
-        "averageHeight": 1.1518
+        "averageStretchPercent": 0.1276,
+        "maxStretchPercent": 2.7984,
+        "averageHeight": 1.1231
       },
       {
         "frame": 300,
         "seconds": 5,
-        "averageStretchPercent": 0.1901,
-        "maxStretchPercent": 6.5583,
-        "averageHeight": 1.1573
+        "averageStretchPercent": 0.1292,
+        "maxStretchPercent": 2.9571,
+        "averageHeight": 1.1375
       },
       {
         "frame": 330,
         "seconds": 5.5,
-        "averageStretchPercent": 0.1781,
-        "maxStretchPercent": 5.4672,
-        "averageHeight": 1.1588
+        "averageStretchPercent": 0.1305,
+        "maxStretchPercent": 3.1457,
+        "averageHeight": 1.1495
       },
       {
         "frame": 360,
         "seconds": 6,
-        "averageStretchPercent": 0.1975,
-        "maxStretchPercent": 5.6774,
-        "averageHeight": 1.1607
+        "averageStretchPercent": 0.1359,
+        "maxStretchPercent": 3.1359,
+        "averageHeight": 1.1582
       },
       {
         "frame": 390,
         "seconds": 6.5,
-        "averageStretchPercent": 0.2267,
-        "maxStretchPercent": 6.4212,
-        "averageHeight": 1.1745
+        "averageStretchPercent": 0.142,
+        "maxStretchPercent": 3.1307,
+        "averageHeight": 1.1633
       },
       {
         "frame": 420,
         "seconds": 7,
-        "averageStretchPercent": 0.2353,
-        "maxStretchPercent": 5.8308,
-        "averageHeight": 1.1941
+        "averageStretchPercent": 0.144,
+        "maxStretchPercent": 3.0153,
+        "averageHeight": 1.1644
       },
       {
         "frame": 450,
         "seconds": 7.5,
-        "averageStretchPercent": 0.22,
-        "maxStretchPercent": 6.7687,
-        "averageHeight": 1.2071
+        "averageStretchPercent": 0.1432,
+        "maxStretchPercent": 3.0672,
+        "averageHeight": 1.163
       },
       {
         "frame": 479,
         "seconds": 7.98,
-        "averageStretchPercent": 0.2375,
-        "maxStretchPercent": 7.7357,
-        "averageHeight": 1.2291
+        "averageStretchPercent": 0.1339,
+        "maxStretchPercent": 3.0807,
+        "averageHeight": 1.1585
       }
     ]
   },
@@ -157,134 +163,140 @@
     "finalStats": {
       "vertexCount": 816,
       "springCount": 4608,
-      "averageStretchPercent": 0.1369,
-      "maxStretchPercent": 7.9533,
-      "averageHeight": 0.5152,
+      "totalSpringCount": 4608,
+      "brokenSpringCount": 0,
+      "averageStretchPercent": 0.1065,
+      "maxStretchPercent": 10.9699,
+      "peakVertexStrainPercent": 10.969903320074081,
+      "averageHeight": 0.3426,
       "windEnabled": true,
       "substeps": 8,
       "stiffness": 0.72,
       "damping": 0.992,
-      "gravity": 9.8
+      "gravity": 9.8,
+      "tearingEnabled": false,
+      "tearThreshold": 0.24,
+      "breaksLastStep": 0
     },
     "series": [
       {
         "frame": 0,
         "seconds": 0,
-        "averageStretchPercent": 0.4424,
-        "maxStretchPercent": 1.6757,
-        "averageHeight": 0.3769
+        "averageStretchPercent": 0.696,
+        "maxStretchPercent": 13.4913,
+        "averageHeight": 0.3796
       },
       {
         "frame": 30,
         "seconds": 0.5,
-        "averageStretchPercent": 0.1544,
-        "maxStretchPercent": 11.0353,
-        "averageHeight": 0.386
+        "averageStretchPercent": 0.1371,
+        "maxStretchPercent": 10.4704,
+        "averageHeight": 0.3401
       },
       {
         "frame": 60,
         "seconds": 1,
-        "averageStretchPercent": 0.1268,
-        "maxStretchPercent": 7.875,
-        "averageHeight": 0.4865
+        "averageStretchPercent": 0.1277,
+        "maxStretchPercent": 10.7696,
+        "averageHeight": 0.3442
       },
       {
         "frame": 90,
         "seconds": 1.5,
-        "averageStretchPercent": 0.1422,
-        "maxStretchPercent": 8.3522,
-        "averageHeight": 0.553
+        "averageStretchPercent": 0.1095,
+        "maxStretchPercent": 10.7508,
+        "averageHeight": 0.3438
       },
       {
         "frame": 120,
         "seconds": 2,
-        "averageStretchPercent": 0.1519,
-        "maxStretchPercent": 8.195,
-        "averageHeight": 0.5779
+        "averageStretchPercent": 0.1055,
+        "maxStretchPercent": 10.9905,
+        "averageHeight": 0.3427
       },
       {
         "frame": 150,
         "seconds": 2.5,
-        "averageStretchPercent": 0.1263,
-        "maxStretchPercent": 6.8138,
-        "averageHeight": 0.5834
+        "averageStretchPercent": 0.1042,
+        "maxStretchPercent": 4.3176,
+        "averageHeight": 0.3424
       },
       {
         "frame": 180,
         "seconds": 3,
-        "averageStretchPercent": 0.1187,
-        "maxStretchPercent": 6.5907,
-        "averageHeight": 0.5702
+        "averageStretchPercent": 0.1156,
+        "maxStretchPercent": 10.7873,
+        "averageHeight": 0.3425
       },
       {
         "frame": 210,
         "seconds": 3.5,
-        "averageStretchPercent": 0.1209,
-        "maxStretchPercent": 7.078,
-        "averageHeight": 0.5359
+        "averageStretchPercent": 0.1046,
+        "maxStretchPercent": 10.9876,
+        "averageHeight": 0.3425
       },
       {
         "frame": 240,
         "seconds": 4,
-        "averageStretchPercent": 0.1346,
-        "maxStretchPercent": 7.4225,
-        "averageHeight": 0.5241
+        "averageStretchPercent": 0.1043,
+        "maxStretchPercent": 11.1856,
+        "averageHeight": 0.3426
       },
       {
         "frame": 270,
         "seconds": 4.5,
-        "averageStretchPercent": 0.1311,
-        "maxStretchPercent": 7.4911,
-        "averageHeight": 0.5451
+        "averageStretchPercent": 0.1054,
+        "maxStretchPercent": 4.2731,
+        "averageHeight": 0.3426
       },
       {
         "frame": 300,
         "seconds": 5,
-        "averageStretchPercent": 0.1116,
-        "maxStretchPercent": 6.8283,
-        "averageHeight": 0.5686
+        "averageStretchPercent": 0.1091,
+        "maxStretchPercent": 10.7708,
+        "averageHeight": 0.3426
       },
       {
         "frame": 330,
         "seconds": 5.5,
-        "averageStretchPercent": 0.1194,
-        "maxStretchPercent": 6.7504,
-        "averageHeight": 0.546
+        "averageStretchPercent": 0.1105,
+        "maxStretchPercent": 11.0482,
+        "averageHeight": 0.3427
       },
       {
         "frame": 360,
         "seconds": 6,
-        "averageStretchPercent": 0.1176,
-        "maxStretchPercent": 6.2665,
-        "averageHeight": 0.5143
+        "averageStretchPercent": 0.1085,
+        "maxStretchPercent": 10.9229,
+        "averageHeight": 0.3427
       },
       {
         "frame": 390,
         "seconds": 6.5,
-        "averageStretchPercent": 0.1199,
-        "maxStretchPercent": 6.4489,
-        "averageHeight": 0.494
+        "averageStretchPercent": 0.1206,
+        "maxStretchPercent": 11.0879,
+        "averageHeight": 0.3426
       },
       {
         "frame": 420,
         "seconds": 7,
-        "averageStretchPercent": 0.1116,
-        "maxStretchPercent": 6.3728,
-        "averageHeight": 0.4962
+        "averageStretchPercent": 0.11,
+        "maxStretchPercent": 11.1377,
+        "averageHeight": 0.3427
       },
       {
         "frame": 450,
         "seconds": 7.5,
-        "averageStretchPercent": 0.1231,
-        "maxStretchPercent": 7.0755,
-        "averageHeight": 0.5026
+        "averageStretchPercent": 0.1147,
+        "maxStretchPercent": 10.997,
+        "averageHeight": 0.3427
       },
       {
         "frame": 479,
         "seconds": 7.98,
-        "averageStretchPercent": 0.1369,
-        "maxStretchPercent": 7.9533,
-        "averageHeight": 0.5152
+        "averageStretchPercent": 0.1065,
+        "maxStretchPercent": 10.9699,
+        "averageHeight": 0.3426
       }
     ]
   },
@@ -301,134 +313,140 @@
     "finalStats": {
       "vertexCount": 468,
       "springCount": 2590,
-      "averageStretchPercent": 0,
-      "maxStretchPercent": 0,
-      "averageHeight": -1.5,
+      "totalSpringCount": 2590,
+      "brokenSpringCount": 0,
+      "averageStretchPercent": 0.3146,
+      "maxStretchPercent": 3.0404,
+      "peakVertexStrainPercent": 3.040361776947975,
+      "averageHeight": -0.6925,
       "windEnabled": false,
       "substeps": 6,
       "stiffness": 0.72,
       "damping": 0.992,
-      "gravity": 9.8
+      "gravity": 9.8,
+      "tearingEnabled": false,
+      "tearThreshold": 0.24,
+      "breaksLastStep": 0
     },
     "series": [
       {
         "frame": 0,
         "seconds": 0,
-        "averageStretchPercent": 0.7772,
-        "maxStretchPercent": 10.6033,
-        "averageHeight": 1.5528
+        "averageStretchPercent": 0,
+        "maxStretchPercent": 0,
+        "averageHeight": 2.4484
       },
       {
         "frame": 30,
         "seconds": 0.5,
-        "averageStretchPercent": 0.1297,
-        "maxStretchPercent": 1.0345,
-        "averageHeight": 0.9278
+        "averageStretchPercent": 0,
+        "maxStretchPercent": 0,
+        "averageHeight": 1.6009
       },
       {
         "frame": 60,
         "seconds": 1,
-        "averageStretchPercent": 0.2468,
-        "maxStretchPercent": 2.1319,
-        "averageHeight": -0.3887
+        "averageStretchPercent": 0.3875,
+        "maxStretchPercent": 3.9868,
+        "averageHeight": 0.242
       },
       {
         "frame": 90,
         "seconds": 1.5,
-        "averageStretchPercent": 0.296,
-        "maxStretchPercent": 6.7406,
-        "averageHeight": -1.2476
+        "averageStretchPercent": 0.3781,
+        "maxStretchPercent": 3.0066,
+        "averageHeight": -0.3689
       },
       {
         "frame": 120,
         "seconds": 2,
-        "averageStretchPercent": 0.1288,
-        "maxStretchPercent": 3.0082,
-        "averageHeight": -1.4742
+        "averageStretchPercent": 0.294,
+        "maxStretchPercent": 2.3315,
+        "averageHeight": -0.5187
       },
       {
         "frame": 150,
         "seconds": 2.5,
-        "averageStretchPercent": 0.0311,
-        "maxStretchPercent": 0.983,
-        "averageHeight": -1.4754
+        "averageStretchPercent": 0.3054,
+        "maxStretchPercent": 2.6662,
+        "averageHeight": -0.5753
       },
       {
         "frame": 180,
         "seconds": 3,
-        "averageStretchPercent": 0.0015,
-        "maxStretchPercent": 0.0077,
-        "averageHeight": -1.5
+        "averageStretchPercent": 0.3059,
+        "maxStretchPercent": 2.7736,
+        "averageHeight": -0.5881
       },
       {
         "frame": 210,
         "seconds": 3.5,
-        "averageStretchPercent": 0,
-        "maxStretchPercent": 0.0001,
-        "averageHeight": -1.5
+        "averageStretchPercent": 0.3375,
+        "maxStretchPercent": 2.9102,
+        "averageHeight": -0.5716
       },
       {
         "frame": 240,
         "seconds": 4,
-        "averageStretchPercent": 0,
-        "maxStretchPercent": 0,
-        "averageHeight": -1.5
+        "averageStretchPercent": 0.3636,
+        "maxStretchPercent": 2.6737,
+        "averageHeight": -0.5375
       },
       {
         "frame": 270,
         "seconds": 4.5,
-        "averageStretchPercent": 0,
-        "maxStretchPercent": 0,
-        "averageHeight": -1.5
+        "averageStretchPercent": 0.3803,
+        "maxStretchPercent": 2.8684,
+        "averageHeight": -0.4956
       },
       {
         "frame": 300,
         "seconds": 5,
-        "averageStretchPercent": 0,
-        "maxStretchPercent": 0,
-        "averageHeight": -1.5
+        "averageStretchPercent": 0.3881,
+        "maxStretchPercent": 2.9098,
+        "averageHeight": -0.4639
       },
       {
         "frame": 330,
         "seconds": 5.5,
-        "averageStretchPercent": 0,
-        "maxStretchPercent": 0,
-        "averageHeight": -1.5
+        "averageStretchPercent": 0.3584,
+        "maxStretchPercent": 2.59,
+        "averageHeight": -0.4386
       },
       {
         "frame": 360,
         "seconds": 6,
-        "averageStretchPercent": 0,
-        "maxStretchPercent": 0,
-        "averageHeight": -1.5
+        "averageStretchPercent": 0.3391,
+        "maxStretchPercent": 2.4921,
+        "averageHeight": -0.4403
       },
       {
         "frame": 390,
         "seconds": 6.5,
-        "averageStretchPercent": 0,
-        "maxStretchPercent": 0,
-        "averageHeight": -1.5
+        "averageStretchPercent": 0.3391,
+        "maxStretchPercent": 4.7382,
+        "averageHeight": -0.4616
       },
       {
         "frame": 420,
         "seconds": 7,
-        "averageStretchPercent": 0,
-        "maxStretchPercent": 0,
-        "averageHeight": -1.5
+        "averageStretchPercent": 0.333,
+        "maxStretchPercent": 4.6736,
+        "averageHeight": -0.5092
       },
       {
         "frame": 450,
         "seconds": 7.5,
-        "averageStretchPercent": 0,
-        "maxStretchPercent": 0,
-        "averageHeight": -1.5
+        "averageStretchPercent": 0.3149,
+        "maxStretchPercent": 2.2996,
+        "averageHeight": -0.5889
       },
       {
         "frame": 479,
         "seconds": 7.98,
-        "averageStretchPercent": 0,
-        "maxStretchPercent": 0,
-        "averageHeight": -1.5
+        "averageStretchPercent": 0.3146,
+        "maxStretchPercent": 3.0404,
+        "averageHeight": -0.6925
       }
     ]
   },
@@ -444,134 +462,140 @@
     "finalStats": {
       "vertexCount": 216,
       "springCount": 1148,
-      "averageStretchPercent": 0.2127,
-      "maxStretchPercent": 4.6982,
-      "averageHeight": 1.5649,
+      "totalSpringCount": 1148,
+      "brokenSpringCount": 0,
+      "averageStretchPercent": 0.4098,
+      "maxStretchPercent": 4.7226,
+      "peakVertexStrainPercent": 4.722605645656586,
+      "averageHeight": 1.6123,
       "windEnabled": true,
       "substeps": 3,
       "stiffness": 0.72,
       "damping": 0.992,
-      "gravity": 9.8
+      "gravity": 9.8,
+      "tearingEnabled": false,
+      "tearThreshold": 0.24,
+      "breaksLastStep": 0
     },
     "series": [
       {
         "frame": 0,
         "seconds": 0,
-        "averageStretchPercent": 1.7834,
-        "maxStretchPercent": 23.5521,
-        "averageHeight": 1.5397
+        "averageStretchPercent": 1.0144,
+        "maxStretchPercent": 11.9726,
+        "averageHeight": 1.5315
       },
       {
         "frame": 30,
         "seconds": 0.5,
-        "averageStretchPercent": 0.9911,
-        "maxStretchPercent": 10.8141,
-        "averageHeight": 2.1335
+        "averageStretchPercent": 0.2248,
+        "maxStretchPercent": 4.1126,
+        "averageHeight": 1.5929
       },
       {
         "frame": 60,
         "seconds": 1,
-        "averageStretchPercent": 0.9916,
-        "maxStretchPercent": 9.3279,
-        "averageHeight": 1.8636
+        "averageStretchPercent": 0.2078,
+        "maxStretchPercent": 2.2739,
+        "averageHeight": 1.5228
       },
       {
         "frame": 90,
         "seconds": 1.5,
-        "averageStretchPercent": 0.5019,
-        "maxStretchPercent": 6.039,
-        "averageHeight": 1.5951
+        "averageStretchPercent": 0.1419,
+        "maxStretchPercent": 2.1743,
+        "averageHeight": 1.5196
       },
       {
         "frame": 120,
         "seconds": 2,
-        "averageStretchPercent": 0.361,
-        "maxStretchPercent": 6.437,
-        "averageHeight": 1.5991
+        "averageStretchPercent": 0.1303,
+        "maxStretchPercent": 1.3895,
+        "averageHeight": 1.5192
       },
       {
         "frame": 150,
         "seconds": 2.5,
-        "averageStretchPercent": 0.2612,
-        "maxStretchPercent": 4.3351,
-        "averageHeight": 1.5892
+        "averageStretchPercent": 0.135,
+        "maxStretchPercent": 1.5938,
+        "averageHeight": 1.5191
       },
       {
         "frame": 180,
         "seconds": 3,
-        "averageStretchPercent": 0.2014,
-        "maxStretchPercent": 4.2348,
-        "averageHeight": 1.5964
+        "averageStretchPercent": 0.1536,
+        "maxStretchPercent": 2.3233,
+        "averageHeight": 1.521
       },
       {
         "frame": 210,
         "seconds": 3.5,
-        "averageStretchPercent": 0.2105,
-        "maxStretchPercent": 4.9562,
-        "averageHeight": 1.5759
+        "averageStretchPercent": 0.1882,
+        "maxStretchPercent": 3.1432,
+        "averageHeight": 1.5276
       },
       {
         "frame": 240,
         "seconds": 4,
-        "averageStretchPercent": 0.2116,
-        "maxStretchPercent": 4.1674,
-        "averageHeight": 1.5524
+        "averageStretchPercent": 0.2414,
+        "maxStretchPercent": 3.6767,
+        "averageHeight": 1.5431
       },
       {
         "frame": 270,
         "seconds": 4.5,
-        "averageStretchPercent": 0.2246,
-        "maxStretchPercent": 4.845,
-        "averageHeight": 1.5698
+        "averageStretchPercent": 0.3021,
+        "maxStretchPercent": 4.4133,
+        "averageHeight": 1.5671
       },
       {
         "frame": 300,
         "seconds": 5,
-        "averageStretchPercent": 0.1853,
-        "maxStretchPercent": 4.332,
-        "averageHeight": 1.6062
+        "averageStretchPercent": 0.3814,
+        "maxStretchPercent": 4.7051,
+        "averageHeight": 1.5951
       },
       {
         "frame": 330,
         "seconds": 5.5,
-        "averageStretchPercent": 0.1811,
-        "maxStretchPercent": 4.6348,
-        "averageHeight": 1.5934
+        "averageStretchPercent": 0.4175,
+        "maxStretchPercent": 5.1874,
+        "averageHeight": 1.617
       },
       {
         "frame": 360,
         "seconds": 6,
-        "averageStretchPercent": 0.2027,
-        "maxStretchPercent": 3.2847,
-        "averageHeight": 1.5419
+        "averageStretchPercent": 0.4458,
+        "maxStretchPercent": 5.2704,
+        "averageHeight": 1.6269
       },
       {
         "frame": 390,
         "seconds": 6.5,
-        "averageStretchPercent": 0.1885,
-        "maxStretchPercent": 3.9815,
-        "averageHeight": 1.5432
+        "averageStretchPercent": 0.4571,
+        "maxStretchPercent": 4.8937,
+        "averageHeight": 1.6274
       },
       {
         "frame": 420,
         "seconds": 7,
-        "averageStretchPercent": 0.1611,
-        "maxStretchPercent": 3.1816,
-        "averageHeight": 1.5737
+        "averageStretchPercent": 0.4559,
+        "maxStretchPercent": 4.4518,
+        "averageHeight": 1.625
       },
       {
         "frame": 450,
         "seconds": 7.5,
-        "averageStretchPercent": 0.1961,
-        "maxStretchPercent": 4.1883,
-        "averageHeight": 1.5899
+        "averageStretchPercent": 0.4392,
+        "maxStretchPercent": 4.2229,
+        "averageHeight": 1.6217
       },
       {
         "frame": 479,
         "seconds": 7.98,
-        "averageStretchPercent": 0.2127,
-        "maxStretchPercent": 4.6982,
-        "averageHeight": 1.5649
+        "averageStretchPercent": 0.4098,
+        "maxStretchPercent": 4.7226,
+        "averageHeight": 1.6123
       }
     ]
   }

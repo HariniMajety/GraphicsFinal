@@ -1,6 +1,4 @@
-# Artifact Guide
-
-This folder contains gradeable artifacts produced by the project implementation.
+This folder contains artifacts produced by the project implementation.
 
 ## Included Files
 
@@ -18,9 +16,3 @@ or
 ```bash
 node scripts/benchmark.mjs
 ```
-
-## Suggested Use In Submission
-
-- Include the CSV table in the written report or presentation.
-- Capture one or two viewport PNGs from the live app using the `Capture PNG` button.
-- Mention that the benchmark scenarios demonstrate behavior under different resolutions, wind settings, and constraint budgets.

@@ -1,5 +1,5 @@
 preset,resolution,seconds,avg_stretch_percent,max_stretch_percent,avg_height,vertices,springs,wind_enabled,substeps
-drape,26x18,8,0.2375,7.7357,1.2291,468,2590,true,6
-banner,34x24,8,0.1369,7.9533,0.5152,816,4608,true,8
-drop,26x18,8,0,0,-1.5,468,2590,false,6
-drape,18x12,8,0.2127,4.6982,1.5649,216,1148,true,3
+drape,26x18,8,0.1339,3.0807,1.1585,468,2590,true,6
+banner,34x24,8,0.1065,10.9699,0.3426,816,4608,true,8
+drop,26x18,8,0.3146,3.0404,-0.6925,468,2590,false,6
+drape,18x12,8,0.4098,4.7226,1.6123,216,1148,true,3

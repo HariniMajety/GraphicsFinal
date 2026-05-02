@@ -1,6 +1,6 @@
-# ClothLab
+# Cloth Simulator
 
-ClothLab is a browser-based final project for the topic mass-spring physical simulation. The repository is organized as a submission-ready package with source code, a runnable demo, benchmark artifacts, a final report file, and presentation/collaboration templates.
+Cloth Simulator is a browser-based final project for the topic mass-spring physical simulation. The repository is organized as a submission-ready package with source code, a runnable demo, benchmark artifacts, a final report file, and presentation/collaboration templates.
 
 ## Project Scope
 
@@ -77,24 +77,18 @@ These commands:
 - Switch `Fabric Preset` to compare how different material parameters change the motion.
 - Toggle `Show pin markers` to display constrained vertices.
 - Enable or disable wind, floor collision, and sphere collision for comparisons.
-- Use `Capture PNG` and `Export Metrics JSON` to create submission artifacts.
 
 ## Repository Layout
 
-- `index.html`: application shell and controls
-- `styles.css`: interface styling
-- `src/cloth.js`: simulation state, force accumulation, integration, constraints, and collisions
-- `src/renderer.js`: WebGL renderer and camera controls
-- `src/main.js`: app wiring, UI bindings, animation loop
-- `src/utils.js`: shared helpers for math and artifact downloads
-- `scripts/serve.py`: simple cross-platform local server
-- `run.py`: one-command launcher that finds a free port and opens the demo
-- `scripts/benchmark.mjs`: deterministic benchmark/artifact generator
-- `artifacts/benchmark-summary.json`: generated benchmark data
-- `artifacts/benchmark-table.csv`: generated summary table
-- `report/final-report.rtf`: submission-ready written report in a Word-compatible format
-- `docs/presentation-outline.md`: suggested demo flow for the final presentation
-- `TEAM_COLLABORATION_REPORT_TEMPLATE.md`: individual collaboration report template
+- index.html: application shell and controls
+- styles.css: interface styling
+- src/cloth.js: simulation state, force accumulation, integration, constraints, and collisions
+- src/renderer.js: WebGL renderer and camera controls
+- src/main.js: app wiring, UI bindings, animation loop
+- src/utils.js: shared helpers for math and artifact downloads
+- scripts/serve.py: simple cross-platform local server
+- run.py: one-command launcher that finds a free port and opens the demo
+- scripts/benchmark.mjs: deterministic benchmark/artifact generator
 
 ## Graphics / Algorithm Notes
 
@@ -117,8 +111,8 @@ For wind, the renderer-facing mesh is also used to compute a more physically mot
 ## Included Submission Artifacts
 
 - Interactive executable demo runnable in a browser on Ubuntu, macOS, and Windows
-- Benchmark JSON and CSV artifacts for quantitative evaluation
+- Images included within report. 
 
 ## Extra Credit Survey Statement 
 
-On our honor, both team members completed the online course instructor survey.
+Both team members completed the online course instructor survey.

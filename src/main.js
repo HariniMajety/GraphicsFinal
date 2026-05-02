@@ -1,6 +1,5 @@
 import { ClothSimulation, formatNumber } from "./cloth.js";
 import { Renderer } from "./renderer.js";
-import { downloadBlob, downloadText } from "./utils.js";
 
 const canvas = document.getElementById("viewport");
 const fpsReadout = document.getElementById("fps-readout");
@@ -33,8 +32,6 @@ const controls = {
   strain: document.getElementById("strain-toggle"),
   pins: document.getElementById("pins-toggle"),
   reset: document.getElementById("reset-button"),
-  capture: document.getElementById("capture-button"),
-  metrics: document.getElementById("metrics-button"),
 };
 
 const outputs = {
@@ -172,7 +169,7 @@ function resetToPreset() {
 }
 
 for (const [name, element] of Object.entries(controls)) {
-  if (name === "reset" || name === "capture" || name === "metrics") {
+  if (name === "reset") {
     continue;
   }
   element.addEventListener("input", () => {
@@ -191,26 +188,6 @@ for (const [name, element] of Object.entries(controls)) {
 }
 
 controls.reset.addEventListener("click", resetToPreset);
-controls.capture.addEventListener("click", () => {
-  canvas.toBlob((blob) => {
-    if (!blob) {
-      return;
-    }
-    downloadBlob(`clothlab-${controls.preset.value}.png`, blob);
-  });
-});
-
-controls.metrics.addEventListener("click", () => {
-  const stats = simulation.getStats();
-  const payload = {
-    project: "ClothLab",
-    timestamp: new Date().toISOString(),
-    preset: controls.preset.value,
-    resolution: controls.resolution.value,
-    stats,
-  };
-  downloadText(`clothlab-metrics-${controls.preset.value}.json`, JSON.stringify(payload, null, 2));
-});
 
 syncOutputs();
 resetToPreset();
