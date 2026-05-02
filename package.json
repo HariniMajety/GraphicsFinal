@@ -1,0 +1,11 @@
+{
+  "name": "clothlab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "python3 scripts/serve.py",
+    "benchmark": "node scripts/benchmark.mjs",
+    "check": "node --check src/main.js && node --check src/cloth.js && node --check src/renderer.js && node --check src/utils.js && node --check scripts/benchmark.mjs"
+  }
+}

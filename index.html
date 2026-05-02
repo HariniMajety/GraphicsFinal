@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ClothLab: Interactive Cloth Simulation</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="control-panel">
+        <div class="panel-header">
+          <p class="eyebrow">Graphics Final Project</p>
+          <h1>ClothLab</h1>
+          <p class="subtitle">
+            A WebGL cloth simulator using a mass-spring system with structural,
+            shear, and bend constraints.
+          </p>
+        </div>
+
+        <section class="control-group">
+          <h2>Simulation</h2>
+          <label>
+            <span>Preset</span>
+            <select id="preset-select">
+              <option value="drape">Curtain Drape</option>
+              <option value="banner">Wind Banner</option>
+              <option value="drop">Drop Test</option>
+            </select>
+          </label>
+          <label>
+            <span>Grid Resolution</span>
+            <select id="resolution-select">
+              <option value="18x12">18 x 12</option>
+              <option value="26x18" selected>26 x 18</option>
+              <option value="34x24">34 x 24</option>
+            </select>
+          </label>
+          <label>
+            <span>Solver Substeps</span>
+            <input id="substeps" type="range" min="1" max="12" value="6" />
+            <output id="substeps-value">6</output>
+          </label>
+          <label>
+            <span>Spring Stiffness</span>
+            <input id="stiffness" type="range" min="0.2" max="1.2" step="0.01" value="0.72" />
+            <output id="stiffness-value">0.72</output>
+          </label>
+          <label>
+            <span>Damping</span>
+            <input id="damping" type="range" min="0.96" max="0.999" step="0.001" value="0.992" />
+            <output id="damping-value">0.992</output>
+          </label>
+          <label>
+            <span>Gravity</span>
+            <input id="gravity" type="range" min="2" max="20" step="0.1" value="9.8" />
+            <output id="gravity-value">9.8</output>
+          </label>
+          <label class="checkbox-row">
+            <input id="pause-toggle" type="checkbox" />
+            <span>Pause simulation</span>
+          </label>
+          <button id="reset-button" type="button">Reset Scene</button>
+        </section>
+
+        <section class="control-group">
+          <h2>Forces</h2>
+          <label>
+            <span>Wind Strength</span>
+            <input id="wind" type="range" min="0" max="20" step="0.1" value="7.5" />
+            <output id="wind-value">7.5</output>
+          </label>
+          <label>
+            <span>Wind Variation</span>
+            <input id="gust" type="range" min="0" max="5" step="0.1" value="1.8" />
+            <output id="gust-value">1.8</output>
+          </label>
+          <label class="checkbox-row">
+            <input id="wind-toggle" type="checkbox" checked />
+            <span>Enable wind</span>
+          </label>
+          <label class="checkbox-row">
+            <input id="sphere-toggle" type="checkbox" checked />
+            <span>Enable sphere collision</span>
+          </label>
+          <label class="checkbox-row">
+            <input id="floor-toggle" type="checkbox" checked />
+            <span>Enable floor collision</span>
+          </label>
+        </section>
+
+        <section class="control-group">
+          <h2>Tearing</h2>
+          <label class="checkbox-row">
+            <input id="tear-toggle" type="checkbox" />
+            <span>Enable tearing</span>
+          </label>
+          <label>
+            <span>Tear Threshold</span>
+            <input id="tear-threshold" type="range" min="0.08" max="0.65" step="0.01" value="0.24" />
+            <output id="tear-threshold-value">0.24</output>
+          </label>
+          <label class="checkbox-row">
+            <input id="tear-heat-toggle" type="checkbox" checked />
+            <span>Highlight tear stress</span>
+          </label>
+        </section>
+
+        <section class="control-group">
+          <h2>View</h2>
+          <label class="checkbox-row">
+            <input id="wireframe-toggle" type="checkbox" />
+            <span>Wireframe overlay</span>
+          </label>
+          <label class="checkbox-row">
+            <input id="normals-toggle" type="checkbox" />
+            <span>Normal tint</span>
+          </label>
+          <label class="checkbox-row">
+            <input id="strain-toggle" type="checkbox" />
+            <span>Strain heatmap</span>
+          </label>
+          <label class="checkbox-row">
+            <input id="pins-toggle" type="checkbox" checked />
+            <span>Show pin markers</span>
+          </label>
+          <p class="hint">
+            Drag to orbit. Use the mouse wheel or trackpad to zoom.
+          </p>
+          <div class="stats">
+            <div><span>FPS</span><strong id="fps-readout">0</strong></div>
+            <div><span>Vertices</span><strong id="vertex-readout">0</strong></div>
+            <div><span>Springs</span><strong id="spring-readout">0</strong></div>
+            <div><span>Broken</span><strong id="broken-readout">0</strong></div>
+            <div><span>Stretch Error</span><strong id="stretch-readout">0%</strong></div>
+            <div><span>Peak Strain</span><strong id="peak-readout">0%</strong></div>
+            <div><span>Avg Height</span><strong id="height-readout">0</strong></div>
+            <div><span>Wind</span><strong id="wind-readout">Off</strong></div>
+          </div>
+        </section>
+
+        <section class="control-group">
+          <h2>Tear Challenge</h2>
+          <button id="challenge-button" type="button">Start Challenge</button>
+          <p class="hint">
+            Use WASD or arrow keys to steer the sphere through the cloth. Break springs before the timer runs out.
+          </p>
+          <div class="stats">
+            <div><span>Score</span><strong id="score-readout">0</strong></div>
+            <div><span>Time</span><strong id="timer-readout">0.0</strong></div>
+            <div><span>Status</span><strong id="status-readout">Idle</strong></div>
+          </div>
+        </section>
+
+        <section class="control-group">
+          <h2>Artifacts</h2>
+          <button id="capture-button" type="button">Capture PNG</button>
+          <button id="metrics-button" type="button">Export Metrics JSON</button>
+          <p class="hint">
+            Use these outputs as gradeable artifacts or appendix material in the final submission.
+          </p>
+        </section>
+      </aside>
+
+      <main class="viewport-wrap">
+        <canvas id="viewport" aria-label="3D cloth simulation viewport"></canvas>
+      </main>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
