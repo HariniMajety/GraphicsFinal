@@ -188,18 +188,23 @@ uniform int uFabricKind;
 uniform float uRoughness;
 uniform float uSpecularStrength;
 uniform float uSheenStrength;
+uniform float uStrainReference;
 
 out vec4 outColor;
 
 vec3 heatmap(float t) {
   float x = clamp(t, 0.0, 1.0);
-  vec3 cool = vec3(0.16, 0.44, 0.94);
-  vec3 warm = vec3(0.98, 0.76, 0.18);
-  vec3 hot = vec3(0.87, 0.16, 0.12);
-  if (x < 0.5) {
-    return mix(cool, warm, x * 2.0);
+  vec3 cold = vec3(0.08, 0.18, 0.62);
+  vec3 cool = vec3(0.10, 0.62, 0.92);
+  vec3 warm = vec3(0.98, 0.86, 0.22);
+  vec3 hot = vec3(0.94, 0.26, 0.12);
+  if (x < 0.33) {
+    return mix(cold, cool, x / 0.33);
   }
-  return mix(warm, hot, (x - 0.5) * 2.0);
+  if (x < 0.66) {
+    return mix(cool, warm, (x - 0.33) / 0.33);
+  }
+  return mix(warm, hot, (x - 0.66) / 0.34);
 }
 
 float hash21(vec2 p) {
@@ -372,13 +377,14 @@ vec3 floorDetail(vec3 base, vec3 worldPosition) {
 }
 
 vec3 sphereDetail(vec3 base, vec3 worldPosition) {
-  vec2 p = vec2(atan(worldPosition.z, worldPosition.x), worldPosition.y * 1.35);
-  float clouds = fbm(vec2(p.x * 2.0, p.y * 3.4));
-  float veins = fbm(vec2(p.x * 5.8 + clouds * 0.5, p.y * 8.8));
-  float bands = sin(p.y * 5.2 + p.x * 1.5 + clouds * 0.8) * 0.5 + 0.5;
-  vec3 shaded = mix(base * 0.86, base * 1.06, clouds);
-  shaded += vec3(0.03, 0.04, 0.06) * bands * 0.10;
-  shaded -= vec3(0.05, 0.06, 0.07) * smoothstep(0.62, 0.86, veins) * 0.28;
+  vec2 p = vec2(atan(worldPosition.z, worldPosition.x) * 0.9, worldPosition.y * 1.2);
+  float broadClouds = fbm(vec2(p.x * 1.3, p.y * 2.1));
+  float softVeins = fbm(vec2(p.x * 4.0 + broadClouds * 0.7, p.y * 6.4));
+  float glaze = fbm(vec2(p.x * 2.6 - 1.7, p.y * 3.1 + 0.9));
+  vec3 shaded = mix(base * 0.90, base * 1.05, broadClouds);
+  shaded += vec3(0.030, 0.040, 0.055) * glaze * 0.08;
+  shaded -= vec3(0.035, 0.045, 0.055) * smoothstep(0.66, 0.88, softVeins) * 0.18;
+  shaded += vec3(0.020, 0.018, 0.014) * smoothstep(0.76, 0.94, broadClouds) * 0.06;
   return clamp(shaded, 0.0, 1.0);
 }
 
@@ -400,7 +406,9 @@ void main() {
   float rim = pow(1.0 - ndotv, 2.2);
   vec3 base = uColor;
   if (uStrainTint) {
-    base = heatmap(vStrain * 4.5);
+    float normalizedStrain = clamp(vStrain / max(uStrainReference, 0.0015), 0.0, 1.0);
+    float strainView = pow(normalizedStrain, 0.42);
+    base = heatmap(strainView);
   } else if (uNormalTint) {
     base = shadingNormal * 0.5 + 0.5;
   } else if (uSurfaceKind == 0) {
@@ -467,8 +475,12 @@ void main() {
     shaded += vec3(0.92, 0.90, 0.84) * specular * 0.08;
   } else if (uSurfaceKind == 2) {
     vec3 ceramicFresnel = fresnelSchlick(ndotv, vec3(0.07));
-    shaded += vec3(1.0) * specular * 1.05;
-    shaded += ceramicFresnel * 0.10;
+    float glazeHighlight = pow(ndoth, 52.0) * uSpecularStrength * 0.75;
+    shaded = base * (0.26 + wrapDiffuse * 0.66);
+    shaded += base * skyAmbient * 0.46;
+    shaded += vec3(1.0) * glazeHighlight;
+    shaded += ceramicFresnel * 0.12;
+    shaded += rim * vec3(0.05, 0.06, 0.08) * 0.6;
   } else {
     shaded += vec3(1.0) * specular;
     shaded += base * clothSheen * 0.22;
@@ -776,7 +788,17 @@ export class Renderer {
     return { projection, view, eye };
   }
 
-  useSurfaceProgram(model, color, alpha = 1, surfaceKind = 0, fabricKind = 0, roughness = 0.6, specular = 0.12, sheen = 0.0) {
+  useSurfaceProgram(
+    model,
+    color,
+    alpha = 1,
+    surfaceKind = 0,
+    fabricKind = 0,
+    roughness = 0.6,
+    specular = 0.12,
+    sheen = 0.0,
+    strainReference = 0.01,
+  ) {
     const gl = this.gl;
     const { projection, view, eye } = this.viewProjection();
     gl.useProgram(this.surfaceProgram);
@@ -793,6 +815,7 @@ export class Renderer {
     gl.uniform1f(gl.getUniformLocation(this.surfaceProgram, "uRoughness"), roughness);
     gl.uniform1f(gl.getUniformLocation(this.surfaceProgram, "uSpecularStrength"), specular);
     gl.uniform1f(gl.getUniformLocation(this.surfaceProgram, "uSheenStrength"), sheen);
+    gl.uniform1f(gl.getUniformLocation(this.surfaceProgram, "uStrainReference"), strainReference);
     gl.uniform1f(gl.getUniformLocation(this.surfaceProgram, "uAlpha"), alpha);
   }
 
@@ -810,6 +833,11 @@ export class Renderer {
     const gl = this.gl;
     this.resize();
     this.updateClothMesh(simulation);
+    let peakStrain = 0;
+    for (let index = 0; index < simulation.strain.length; index += 1) {
+      peakStrain = Math.max(peakStrain, simulation.strain[index]);
+    }
+    const strainReference = Math.max(peakStrain * 0.22, 0.003);
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
     gl.enable(gl.BLEND);
@@ -833,7 +861,7 @@ export class Renderer {
       floorModel[13] = simulation.floorY;
       if (!shouldHideFloor) {
         gl.disable(gl.CULL_FACE);
-        this.useSurfaceProgram(floorModel, new Float32Array([0.33, 0.34, 0.35]), 0.9, 1, 0, 0.94, 0.04, 0.0);
+        this.useSurfaceProgram(floorModel, new Float32Array([0.33, 0.34, 0.35]), 0.9, 1, 0, 0.94, 0.04, 0.0, strainReference);
         gl.bindVertexArray(this.floorBuffers.vao);
         gl.drawElements(gl.TRIANGLES, this.floorBuffers.count, gl.UNSIGNED_SHORT, 0);
         gl.enable(gl.CULL_FACE);
@@ -847,7 +875,7 @@ export class Renderer {
         0, 0, simulation.sphere.radius, 0,
         simulation.sphere.center[0], simulation.sphere.center[1], simulation.sphere.center[2], 1,
       ]);
-      this.useSurfaceProgram(sphereModel, new Float32Array([0.88, 0.91, 0.95]), 1, 2, 0, 0.24, 0.40, 0.0);
+      this.useSurfaceProgram(sphereModel, new Float32Array([0.86, 0.90, 0.94]), 1, 2, 0, 0.18, 0.52, 0.0, strainReference);
       gl.bindVertexArray(this.sphereBuffers.vao);
       gl.drawElements(gl.TRIANGLES, this.sphereBuffers.count, gl.UNSIGNED_SHORT, 0);
     }
@@ -863,6 +891,7 @@ export class Renderer {
       clothMaterial.roughness,
       clothMaterial.specular,
       clothMaterial.sheen,
+      strainReference,
     );
     gl.bindVertexArray(this.clothBuffers.vao);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.clothBuffers.indexBuffer);

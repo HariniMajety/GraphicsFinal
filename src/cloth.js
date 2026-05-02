@@ -57,6 +57,7 @@ export class ClothSimulation {
     this.totalSpringCount = 0;
     this.brokenSpringCount = 0;
     this.lastBreakCount = 0;
+    this.dropVariation = config.dropVariation ?? null;
     this.resetGeometry();
   }
 
@@ -66,6 +67,15 @@ export class ClothSimulation {
     this.normals = new Float32Array(pointCount * 3);
     this.strain = new Float32Array(pointCount);
     this.uvs = new Float32Array(pointCount * 2);
+    const dropVariation =
+      this.sceneName === "drop"
+        ? this.dropVariation ?? {
+            offsetX: (Math.random() - 0.5) * 0.55,
+            offsetZ: (Math.random() - 0.5) * 0.55,
+            tiltX: (Math.random() - 0.5) * 0.22,
+            tiltZ: (Math.random() - 0.5) * 0.22,
+          }
+        : null;
     this.particles = Array.from({ length: pointCount }, (_, index) => {
       const x = index % this.width;
       const y = Math.floor(index / this.width);
@@ -77,6 +87,21 @@ export class ClothSimulation {
         px = this.origin[0] + x * this.spacing;
         py = this.origin[1];
         pz = this.origin[2] + y * this.spacing;
+      }
+
+      if (dropVariation) {
+        const u = this.width > 1 ? x / (this.width - 1) - 0.5 : 0;
+        const v = this.height > 1 ? y / (this.height - 1) - 0.5 : 0;
+        px += dropVariation.offsetX;
+        pz += dropVariation.offsetZ;
+        py += u * dropVariation.tiltX + v * dropVariation.tiltZ;
+      }
+
+      if (this.sceneName === "banner") {
+        const u = this.width > 1 ? x / (this.width - 1) : 0;
+        const v = this.height > 1 ? y / (this.height - 1) : 0;
+        const edgeLift = Math.sin(u * Math.PI) * (1.0 - v);
+        pz += edgeLift * 0.10;
       }
 
       const pinned = this.isPinned(x, y);
@@ -371,11 +396,22 @@ export class ClothSimulation {
       const triangleVelocityY = (vaY + vbY + vcY) / 3;
       const triangleVelocityZ = (vaZ + vbZ + vcZ) / 3;
 
-      const flutter =
+      let flutter =
         Math.sin(this.time * 3.1 + centerX * 0.8 + centerY * 0.35 + centerZ * 0.45) * 0.5;
-      const windX = windStrength * 0.8;
-      const windY = flutter * 0.6;
-      const windZ = windStrength * (0.48 + flutter * 0.3);
+      let windX = windStrength * 0.8;
+      let windY = flutter * 0.6;
+      let windZ = windStrength * (0.48 + flutter * 0.3);
+      let dragMultiplier = 1.0;
+
+      if (this.sceneName === "banner") {
+        flutter =
+          Math.sin(this.time * 4.6 + centerY * 0.9 + centerX * 0.5) * 0.55 +
+          Math.sin(this.time * 2.3 + centerX * 1.2) * 0.35;
+        windX = Math.sin(this.time * 1.4 + centerY * 0.7) * windStrength * 0.28;
+        windY = flutter * 0.45;
+        windZ = windStrength * (1.15 + flutter * 0.42);
+        dragMultiplier = 1.9;
+      }
 
       const relWindX = windX - triangleVelocityX;
       const relWindY = windY - triangleVelocityY;
@@ -389,7 +425,7 @@ export class ClothSimulation {
       const normalY = ny / areaTwice;
       const normalZ = nz / areaTwice;
       const incidence = normalX * relWindX + normalY * relWindY + normalZ * relWindZ;
-      const forceScale = WIND_DRAG * incidence * areaTwice;
+      const forceScale = WIND_DRAG * dragMultiplier * incidence * areaTwice;
 
       const forceX = normalX * forceScale;
       const forceY = normalY * forceScale;
