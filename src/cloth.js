@@ -404,12 +404,14 @@ export class ClothSimulation {
       let dragMultiplier = 1.0;
 
       if (this.sceneName === "banner") {
+        const bannerWindMagnitude = Math.max(Math.abs(windStrength), 0);
+        const flutterScale = Math.min(1.4, bannerWindMagnitude / 4.5);
         flutter =
           Math.sin(this.time * 4.6 + centerY * 0.9 + centerX * 0.5) * 0.55 +
           Math.sin(this.time * 2.3 + centerX * 1.2) * 0.35;
-        windX = Math.sin(this.time * 1.4 + centerY * 0.7) * windStrength * 0.28;
-        windY = flutter * 0.45;
-        windZ = windStrength * (1.15 + flutter * 0.42);
+        windX = Math.sin(this.time * 1.4 + centerY * 0.7) * windStrength * (0.12 + flutterScale * 0.18);
+        windY = flutter * flutterScale * 0.35;
+        windZ = windStrength * (0.7 + flutterScale * 0.35 + flutter * 0.22);
         dragMultiplier = 1.9;
       }
 

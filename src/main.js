@@ -109,6 +109,30 @@ function applyMaterialPreset(name) {
   controls.sphereFriction.value = "0.08";
 }
 
+function applyPresetToggleDefaults() {
+  if (controls.preset.value === "banner") {
+    controls.windToggle.checked = true;
+    controls.sphereToggle.checked = false;
+    return;
+  }
+  if (controls.preset.value === "drop") {
+    controls.windToggle.checked = false;
+    controls.sphereToggle.checked = true;
+    return;
+  }
+  controls.windToggle.checked = true;
+  controls.sphereToggle.checked = true;
+}
+
+function syncViewModeToggles(changedControl) {
+  if (changedControl === "normals" && controls.normals.checked) {
+    controls.strain.checked = false;
+  }
+  if (changedControl === "strain" && controls.strain.checked) {
+    controls.normals.checked = false;
+  }
+}
+
 function pullControlsIntoSimulation() {
   simulation.setParam("substeps", Number(controls.substeps.value));
   simulation.setParam("stiffness", Number(controls.stiffness.value));
@@ -125,7 +149,7 @@ function pullControlsIntoSimulation() {
   simulation.setMaterialPreset(controls.material.value);
   renderer.setFlags({
     wireframe: controls.wireframe.checked,
-    normalTint: controls.normals.checked && !controls.strain.checked,
+    normalTint: controls.normals.checked,
     strainTint: controls.strain.checked,
     showPins: controls.pins.checked,
   });
@@ -148,24 +172,28 @@ function applyResolutionSetting() {
   simulation.height = height;
 }
 
-function resetToPreset() {
+function rebuildScene({ resetCamera = false } = {}) {
   applyResolutionSetting();
   simulation.applyPreset(controls.preset.value);
-  renderer.resetCameraForPreset(controls.preset.value);
-  if (controls.preset.value === "banner") {
-    controls.windToggle.checked = true;
-    controls.sphereToggle.checked = false;
-  } else if (controls.preset.value === "drop") {
-    controls.windToggle.checked = false;
-    controls.sphereToggle.checked = true;
-  } else {
-    controls.windToggle.checked = true;
-    controls.sphereToggle.checked = true;
+  if (resetCamera) {
+    renderer.resetCameraForPreset(controls.preset.value);
   }
-  applyMaterialPreset(controls.material.value);
-  syncOutputs();
   pullControlsIntoSimulation();
   syncStats();
+}
+
+function resetToPreset() {
+  applyPresetToggleDefaults();
+  applyMaterialPreset(controls.material.value);
+  syncViewModeToggles();
+  syncOutputs();
+  rebuildScene({ resetCamera: true });
+}
+
+function resetScenePreservingControls() {
+  syncViewModeToggles();
+  syncOutputs();
+  rebuildScene({ resetCamera: true });
 }
 
 for (const [name, element] of Object.entries(controls)) {
@@ -174,20 +202,28 @@ for (const [name, element] of Object.entries(controls)) {
   }
   element.addEventListener("input", () => {
     if (name === "material") {
-      resetToPreset();
+      applyMaterialPreset(controls.material.value);
+      syncOutputs();
+      rebuildScene();
       return;
     }
-    syncOutputs();
     if (name === "preset" || name === "resolution") {
-      resetToPreset();
+      if (name === "preset") {
+        resetToPreset();
+        return;
+      }
+      syncOutputs();
+      rebuildScene();
       return;
     }
+    syncViewModeToggles(name);
+    syncOutputs();
     pullControlsIntoSimulation();
     syncStats();
   });
 }
 
-controls.reset.addEventListener("click", resetToPreset);
+controls.reset.addEventListener("click", resetScenePreservingControls);
 
 syncOutputs();
 resetToPreset();
