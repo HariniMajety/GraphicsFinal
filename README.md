@@ -15,8 +15,7 @@ This project demonstrates:
 - Multiple presets to show different behaviors: drape, banner, and free-fall drop test.
 - Runtime metrics for stretch error, average height, and simulation state.
 - Per-vertex strain heatmap visualization for inspecting where the cloth is under the most stress.
-- Strain-based tearing that breaks springs and removes cloth triangles when deformation exceeds a threshold.
-- A keyboard-controlled `Tear Challenge` game mode built on top of the tearing system.
+- Fabric presets with distinct motion behavior: silk, canvas, velvet, and rubber sheet.
 - Exportable PNG and JSON artifacts from the live demo.
 - Offline benchmark generation for reproducible grading artifacts.
 
@@ -75,11 +74,10 @@ These commands:
 - Toggle `Wireframe overlay` to inspect the cloth mesh.
 - Toggle `Normal tint` to visualize changing normals.
 - Toggle `Strain heatmap` to visualize local deformation intensity.
-- Enable `Tearing` and lower `Tear Threshold` to let the cloth rip under stress.
+- Switch `Fabric Preset` to compare how different material parameters change the motion.
 - Toggle `Show pin markers` to display constrained vertices.
 - Enable or disable wind, floor collision, and sphere collision for comparisons.
 - Use `Capture PNG` and `Export Metrics JSON` to create submission artifacts.
-- Use `Start Challenge` and steer the sphere with `WASD` or arrow keys to rip the cloth for score.
 
 ## Recommended Demo Flow
 
@@ -126,8 +124,6 @@ The simulator uses **Verlet integration**:
 After each integration step, the solver performs multiple iterations of **distance constraint projection** over all springs. This keeps the cloth from stretching excessively and is substantially more stable than naively applying Hooke's law with large timesteps in a simple explicit integrator.
 
 For wind, the renderer-facing mesh is also used to compute a more physically motivated **triangle-based aerodynamic force**. Instead of pushing each particle with the same ad hoc impulse, the solver evaluates each cloth triangle using its current area, normal direction, and relative wind velocity, then distributes an area-weighted drag force back to the triangle's three vertices. This produces richer folds and more directional response than a uniform per-particle wind field.
-
-For the above-and-beyond tearing extension, structural and shear springs are marked as breakable. When their stretch ratio exceeds the configured threshold, they are removed from the active spring graph. The cloth mesh is then rebuilt from the remaining active triangle edges, so rips appear both in the wireframe and the shaded surface rather than only in the physics state.
 
 ## Included Submission Artifacts
 

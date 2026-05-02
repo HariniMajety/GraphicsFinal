@@ -24,9 +24,10 @@ body {
   margin: 0;
   min-height: 100%;
   background:
-    radial-gradient(circle at top right, rgba(120, 211, 255, 0.12), transparent 30%),
-    radial-gradient(circle at bottom left, rgba(247, 185, 85, 0.12), transparent 34%),
-    linear-gradient(160deg, #06111b 0%, #0b1825 45%, #08131e 100%);
+    radial-gradient(circle at top right, rgba(120, 211, 255, 0.14), transparent 24%),
+    radial-gradient(circle at 20% 80%, rgba(247, 185, 85, 0.10), transparent 28%),
+    radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.03), transparent 22%),
+    linear-gradient(160deg, #050d15 0%, #091723 42%, #08131e 100%);
   color: var(--text);
   font-family: var(--font-body);
 }
@@ -46,7 +47,9 @@ body {
 .control-panel,
 .viewport-wrap {
   border: 1px solid var(--panel-border);
-  background: var(--panel);
+  background:
+    linear-gradient(180deg, rgba(10, 23, 35, 0.96), rgba(7, 19, 31, 0.88)),
+    var(--panel);
   backdrop-filter: blur(12px);
   box-shadow: var(--shadow);
 }
@@ -101,7 +104,8 @@ h1 {
   padding: 16px;
   border: 1px solid rgba(167, 214, 255, 0.12);
   border-radius: 16px;
-  background: rgba(11, 25, 38, 0.7);
+  background:
+    linear-gradient(180deg, rgba(18, 34, 48, 0.82), rgba(10, 23, 35, 0.72));
 }
 
 .control-group h2 {
@@ -186,7 +190,7 @@ button:hover {
 .stats div {
   padding: 12px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
 }
 
 .stats span,

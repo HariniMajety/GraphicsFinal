@@ -19,6 +19,7 @@ export class ClothSimulation {
     this.orientation = config.orientation ?? "vertical-xy";
     this.pinMode = config.pinMode ?? "top-row";
     this.verticalDrop = config.verticalDrop ?? 0;
+    this.materialPreset = config.materialPreset ?? "silk";
     this.params = {
       stiffness: config.stiffness ?? 0.72,
       damping: config.damping ?? 0.992,
@@ -46,6 +47,7 @@ export class ClothSimulation {
     this.positions = new Float32Array();
     this.normals = new Float32Array();
     this.strain = new Float32Array();
+    this.uvs = new Float32Array();
     this.particles = [];
     this.springs = [];
     this.totalSpringCount = 0;
@@ -59,6 +61,7 @@ export class ClothSimulation {
     this.positions = new Float32Array(pointCount * 3);
     this.normals = new Float32Array(pointCount * 3);
     this.strain = new Float32Array(pointCount);
+    this.uvs = new Float32Array(pointCount * 2);
     this.particles = Array.from({ length: pointCount }, (_, index) => {
       const x = index % this.width;
       const y = Math.floor(index / this.width);
@@ -73,6 +76,10 @@ export class ClothSimulation {
       }
 
       const pinned = this.isPinned(x, y);
+      const u = this.width > 1 ? x / (this.width - 1) : 0;
+      const v = this.height > 1 ? y / (this.height - 1) : 0;
+      this.uvs[index * 2] = u;
+      this.uvs[index * 2 + 1] = v;
 
       return {
         position: [px, py, pz],
@@ -268,6 +275,10 @@ export class ClothSimulation {
 
   setParam(name, value) {
     this.params[name] = value;
+  }
+
+  setMaterialPreset(name) {
+    this.materialPreset = name;
   }
 
   setPinMode(pinMode) {

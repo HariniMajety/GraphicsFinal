@@ -37,6 +37,15 @@
             </select>
           </label>
           <label>
+            <span>Fabric Preset</span>
+            <select id="material-select">
+              <option value="silk">Silk</option>
+              <option value="canvas">Canvas</option>
+              <option value="velvet">Velvet</option>
+              <option value="rubber">Rubber Sheet</option>
+            </select>
+          </label>
+          <label>
             <span>Solver Substeps</span>
             <input id="substeps" type="range" min="1" max="12" value="6" />
             <output id="substeps-value">6</output>
@@ -90,23 +99,6 @@
         </section>
 
         <section class="control-group">
-          <h2>Tearing</h2>
-          <label class="checkbox-row">
-            <input id="tear-toggle" type="checkbox" />
-            <span>Enable tearing</span>
-          </label>
-          <label>
-            <span>Tear Threshold</span>
-            <input id="tear-threshold" type="range" min="0.08" max="0.65" step="0.01" value="0.24" />
-            <output id="tear-threshold-value">0.24</output>
-          </label>
-          <label class="checkbox-row">
-            <input id="tear-heat-toggle" type="checkbox" checked />
-            <span>Highlight tear stress</span>
-          </label>
-        </section>
-
-        <section class="control-group">
           <h2>View</h2>
           <label class="checkbox-row">
             <input id="wireframe-toggle" type="checkbox" />
@@ -131,24 +123,11 @@
             <div><span>FPS</span><strong id="fps-readout">0</strong></div>
             <div><span>Vertices</span><strong id="vertex-readout">0</strong></div>
             <div><span>Springs</span><strong id="spring-readout">0</strong></div>
-            <div><span>Broken</span><strong id="broken-readout">0</strong></div>
+            <div><span>Fabric</span><strong id="material-readout">Silk</strong></div>
             <div><span>Stretch Error</span><strong id="stretch-readout">0%</strong></div>
             <div><span>Peak Strain</span><strong id="peak-readout">0%</strong></div>
             <div><span>Avg Height</span><strong id="height-readout">0</strong></div>
             <div><span>Wind</span><strong id="wind-readout">Off</strong></div>
-          </div>
-        </section>
-
-        <section class="control-group">
-          <h2>Tear Challenge</h2>
-          <button id="challenge-button" type="button">Start Challenge</button>
-          <p class="hint">
-            Use WASD or arrow keys to steer the sphere through the cloth. Break springs before the timer runs out.
-          </p>
-          <div class="stats">
-            <div><span>Score</span><strong id="score-readout">0</strong></div>
-            <div><span>Time</span><strong id="timer-readout">0.0</strong></div>
-            <div><span>Status</span><strong id="status-readout">Idle</strong></div>
           </div>
         </section>
 
